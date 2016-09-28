@@ -8,6 +8,7 @@ import threading
 import thread
 import traceback
 import gc
+import random, time
 from twisted.python import finalize
 
 N_RUNS = 100
@@ -149,7 +150,7 @@ def run_benchmarks(generate_rest_tables, generate_plots, verbose):
 
     if verbose:
         print(results)
-    gc.collect()
+    #gc.collect()
         
 class run_benchmarks_e(threading.Thread):
     def run(sef):
@@ -171,6 +172,7 @@ if __name__ == '__main__':
         
         gc.collect()
         for thread in threads:
+            time.sleep(2*random.random()) 
             thread.start()
         
         for thread in threads:
