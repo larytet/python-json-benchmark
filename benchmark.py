@@ -7,6 +7,7 @@ from collections import OrderedDict
 import threading
 import thread
 import traceback
+import gc
 from twisted.python import finalize
 
 N_RUNS = 100
@@ -148,6 +149,7 @@ def run_benchmarks(generate_rest_tables, generate_plots, verbose):
 
     if verbose:
         print(results)
+    gc.collect()
         
 class run_benchmarks_e(threading.Thread):
     def run(sef):
@@ -160,13 +162,17 @@ class run_benchmarks_e(threading.Thread):
         
 if __name__ == '__main__':
     args = set(sys.argv[1:])
-    threads = []
-    for n in range (0, 4):
-        thread = run_benchmarks_e()
-        threads.append(thread)
+    print("Starting")
+    while True:
+        threads = []
+        for n in range (0, 16):
+            thread = run_benchmarks_e()
+            threads.append(thread)
         
-    for thread in threads:
-        thread.start()
+        gc.collect()
+        for thread in threads:
+            thread.start()
         
-    for thread in threads:
-        thread.join()
+        for thread in threads:
+            thread.join()
+            
